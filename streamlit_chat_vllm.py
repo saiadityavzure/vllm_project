@@ -15,17 +15,8 @@ from langchain_core.prompts import PromptTemplate
 Aim: make an interactive chat using the vllm chatbot Mistral
 
 """
-
-
-
-def main():
-    
-    st.set_page_config(page_title="Chat with our Agent!",
-                       page_icon=":books:")
-    #st.write(css, unsafe_allow_html=True)
-
-    #Step 1: creating the prompt template
-
+@st.cache_resource
+def load_chain():
     template = """you are an Artificial Intelligence agent and answer the following question carefully
     Question: {question}
 
@@ -48,6 +39,20 @@ def main():
     )
     #Step 3: making the LLM chain
     llm_chain = LLMChain(prompt=prompt, llm=llm)
+    st.success("Loaded Mistral model successfully!") 
+    return llm_chain
+
+
+
+def main():
+    
+    st.set_page_config(page_title="Chat with our Agent!",
+                       page_icon=":books:")
+    #st.write(css, unsafe_allow_html=True)
+
+    #Step 1: creating the prompt template
+
+    
 
     
     # Store LLM generated responses
@@ -64,7 +69,8 @@ def main():
         #here we will write the user question and the password
         
         #Here we need to infer the model through vllm and get the response back
-        ai_answer = llm_chain.invoke(user_question)
+        llm_chain1 = load_chain()
+        ai_answer = llm_chain1.invoke(user_question)
         #st.write(response)
         #Now we got the response from the ai agent and now we will return the response
         #we will return just the value of the answer
